@@ -73,3 +73,6 @@ type FireCharge struct{ sound }
 
 // Totem is a sound played when a player uses a totem.
 type Totem struct{ sound }
+
+// TridentThrow is a sound played when a trident is thrown
+type TridentThrow struct{ sound }

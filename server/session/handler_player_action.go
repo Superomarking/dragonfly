@@ -67,6 +67,10 @@ func handlePlayerAction(action int32, face int32, pos protocol.BlockPos, entityR
 		s.swingingArm.Store(true)
 		defer s.swingingArm.Store(false)
 		s.c.PunchAir()
+	case protocol.PlayerActionStartSpinAttack:
+		s.c.StartSpinning()
+	case protocol.PlayerActionStopSpinAttack:
+		s.c.StopSpinning()
 	default:
 		return fmt.Errorf("unhandled ActionType %v", action)
 	}

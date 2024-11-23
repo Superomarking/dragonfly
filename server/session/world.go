@@ -798,6 +798,8 @@ func (s *Session) playSound(pos mgl64.Vec3, t world.Sound, disableRelative bool)
 			EventType: packet.LevelEventSoundTotemUsed,
 			Position:  vec64To32(pos),
 		})
+	case sound.TridentThrow:
+		pk.SoundType = packet.SoundEventTridentThrow
 	}
 	s.writePacket(pk)
 }

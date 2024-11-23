@@ -56,6 +56,9 @@ func (s *Session) addSpecificMetadata(e any, m protocol.EntityMetadata) {
 	if gl, ok := e.(glider); ok && gl.Gliding() {
 		m.SetFlag(protocol.EntityDataKeyFlags, protocol.EntityDataFlagGliding)
 	}
+	if sp, ok := e.(spinner); ok && sp.Spinning() {
+		m.SetFlag(protocol.EntityDataKeyFlags, protocol.EntityDataFlagDamageNearbyMobs)
+	}
 	if b, ok := e.(breather); ok {
 		m[protocol.EntityDataKeyAirSupply] = int16(b.AirSupply().Milliseconds() / 50)
 		m[protocol.EntityDataKeyAirSupplyMax] = int16(b.MaxAirSupply().Milliseconds() / 50)
@@ -187,6 +190,10 @@ type crawler interface {
 
 type glider interface {
 	Gliding() bool
+}
+
+type spinner interface {
+	Spinning() bool
 }
 
 type breather interface {

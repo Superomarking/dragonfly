@@ -80,6 +80,9 @@ type Controllable interface {
 	StartGliding()
 	Gliding() bool
 	StopGliding()
+	StartSpinning()
+	Spinning() bool
+	StopSpinning()
 	Jump()
 
 	StartBreaking(pos cube.Pos, face cube.Face)

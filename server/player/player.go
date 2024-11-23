@@ -63,7 +63,7 @@ type Player struct {
 	armour                   *inventory.Armour
 	heldSlot                 *atomic.Uint32
 
-	sneaking, sprinting, swimming, gliding, crawling, flying,
+	sneaking, sprinting, swimming, gliding, spinning, crawling, flying,
 	invisible, immobile, onGround, usingItem atomic.Bool
 	usingSince atomic.Int64
 
@@ -1124,6 +1124,31 @@ func (p *Player) StopGliding() {
 	p.updateState()
 }
 
+// StartSpinning makes the player start spinning if it is not currently doing so.
+func (p *Player) StartSpinning() {
+	if !p.spinning.CompareAndSwap(false, true) {
+		return
+	}
+	trident, _ := p.HeldItems()
+	if _, ok := trident.Item().(item.Trident); !ok || trident.Durability() < 14 {
+		return
+	}
+	p.updateState()
+}
+
+// Spinning checks if the player is currently spinning.
+func (p *Player) Spinning() bool {
+	return p.spinning.Load()
+}
+
+// StopSpinning makes the player stop spinning if it is currently doing so.
+func (p *Player) StopSpinning() {
+	if !p.spinning.CompareAndSwap(true, false) {
+		return
+	}
+	p.updateState()
+}
+
 // StartFlying makes the player start flying if they aren't already. It requires the player to be in a gamemode which
 // allows flying.
 func (p *Player) StartFlying() {
@@ -1625,6 +1650,13 @@ func (p *Player) AttackEntity(e world.Entity) bool {
 	}
 	if s, ok := i.Enchantment(enchantment.Sharpness{}); ok {
 		dmg += (enchantment.Sharpness{}).Addend(s.Level())
+	}
+	if impaling, ok := i.Enchantment(enchantment.Impaling{}); ok {
+		raining := p.World().RainingAt(cube.PosFromVec3(p.Position()))
+		liquid, _ := p.World().Liquid(cube.PosFromVec3(p.Position()))
+		if _, ok := liquid.(block.Water); ok || raining {
+			dmg += (enchantment.Impaling{}).BonusDamage(impaling.Level())
+		}
 	}
 	if critical {
 		dmg *= 1.5
