@@ -111,7 +111,7 @@ type EntityRegistryConfig struct {
 	Snowball           func(pos, vel mgl64.Vec3, owner Entity) Entity
 	SplashPotion       func(pos, vel mgl64.Vec3, t any, owner Entity) Entity
 	Lightning          func(pos mgl64.Vec3) Entity
-	Trident            func(pos, vel mgl64.Vec3, rot cube.Rotation, owner Entity, disallowPickup, obtainTridentOnPickup bool) Entity
+	Trident            func(pos, vel mgl64.Vec3, rot cube.Rotation, owner Entity, obtainTridentOnPickup bool) Entity
 }
 
 // New creates an EntityRegistry using conf and the EntityTypes passed.

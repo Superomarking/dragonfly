@@ -91,12 +91,12 @@ var conf = world.EntityRegistryConfig{
 	Lightning: func(pos mgl64.Vec3) world.Entity {
 		return NewLightning(pos)
 	},
-	Trident: func(pos, vel mgl64.Vec3, rot cube.Rotation, owner world.Entity, disallowPickup, obtainTridentOnPickup bool) world.Entity {
+	Trident: func(pos, vel mgl64.Vec3, rot cube.Rotation, owner world.Entity, obtainTridentOnPickup bool) world.Entity {
 		t := NewThrownTrident(pos, rot, owner)
 		b := t.conf.Behaviour.(*ProjectileBehaviour)
-		b.conf.DisablePickup = disallowPickup
 		if obtainTridentOnPickup {
-			b.conf.PickupItem = item.NewStack(item.Trident{}, 1)
+			b.conf.DisablePickup = false
+			b.conf.PickupItem = t.Type().(ThrownTridentType).GetTridentItem()
 		}
 		t.vel = vel
 		return t

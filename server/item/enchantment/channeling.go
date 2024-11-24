@@ -40,3 +40,7 @@ func (Channeling) CompatibleWithItem(i world.Item) bool {
 	_, ok := i.(item.Trident)
 	return ok
 }
+
+func (Channeling) StrikesMobs() bool {
+	return true
+}

@@ -2,6 +2,7 @@ package item
 
 import (
 	"github.com/df-mc/dragonfly/server/block/cube"
+	"github.com/df-mc/dragonfly/server/entity"
 	"github.com/df-mc/dragonfly/server/world/sound"
 	"math"
 	"time"
@@ -37,7 +38,6 @@ func (Trident) Release(releaser Releaser, duration time.Duration, ctx *UseContex
 		if _, ok := enchant.Type().(interface{ OnlyUnderwater() bool }); ok {
 			// Riptide shouldn't throw a projectile.
 			//TODO: Riptide sounds
-
 			return
 		}
 	}
@@ -62,13 +62,15 @@ func (Trident) Release(releaser Releaser, duration time.Duration, ctx *UseContex
 		rot[0] = 360 - rot[0]
 	}
 
-	create := releaser.World().EntityRegistry().Config().Trident
-	projectile := create(eyePosition(releaser), releaser.Rotation().Vec3().Mul(force*5), rot, releaser, false, true)
-
-	ctx.DamageItem(1)
 	if !creative {
+		ctx.DamageItem(1)
 		ctx.Consume(trident.Grow(-trident.Count() + 1))
 	}
+
+	create := releaser.World().EntityRegistry().Config().Trident
+	projectile := create(eyePosition(releaser), releaser.Rotation().Vec3().Mul(force*5), rot, releaser, true)
+
+	projectile.Type().(entity.ThrownTridentType).SetTridentItem(trident)
 
 	releaser.PlaySound(sound.TridentThrow{})
 	releaser.World().AddEntity(projectile)

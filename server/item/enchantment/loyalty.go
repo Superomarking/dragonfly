@@ -40,3 +40,8 @@ func (Loyalty) CompatibleWithItem(i world.Item) bool {
 	_, ok := i.(item.Trident)
 	return ok
 }
+
+// AlwaysReturns ...
+func (Loyalty) AlwaysReturns() bool {
+	return true
+}
